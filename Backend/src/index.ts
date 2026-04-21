@@ -33,7 +33,6 @@ app.get('/', asyncHandler( async (req: Request, res: Response, next: NextFunctio
     .json({ message: "Welcome to the server!" })
 }))
 
-
 // routes IMPORT
 
 
