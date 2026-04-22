@@ -45,6 +45,7 @@ import getAllTransactionRouter from "./routes/transaction.route"
 import getTransactionByIdRouter from "./routes/transaction.route"
 import duplicateTransactionRouter from "./routes/transaction.route"
 import updateTransactionRouter from "./routes/transaction.route"
+import deleteTransactionRouter from "./routes/transaction.route"
 
 app.use(`${BASE_PATH}/auth`, authRouter)   // auth router
 app.use(`${BASE_PATH}/login`, loginRouter)   // login router
@@ -53,6 +54,8 @@ app.use(`${BASE_PATH}/transaction`, createTransactionRouter)   // transaction ro
 app.use(`${BASE_PATH}/transaction`, getAllTransactionRouter)   // transaction router
 app.use(`${BASE_PATH}/transaction`, getTransactionByIdRouter)   // transaction router
 app.use(`${BASE_PATH}/transaction`, updateTransactionRouter)   // transaction router
+app.use(`${BASE_PATH}/transaction`, duplicateTransactionRouter)   // transaction router
+app.use(`${BASE_PATH}/transaction`, deleteTransactionRouter)   // transaction router
 
 
 

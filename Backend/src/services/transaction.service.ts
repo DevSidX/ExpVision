@@ -216,10 +216,24 @@ const updateTransactionService = async (userId: string, transactionId: string, b
     return;
 }
 
+const deleteTransactionService = async (userId: string, transactionId: string) => {
+    const deletedTransaction = await Transaction.findOneAndDelete({
+        _id: transactionId,
+        userId: userId,
+    })
+
+    if (!deletedTransaction) {
+        throw new NotFoundException("Transaction not Found!");
+    }
+
+    return deletedTransaction
+}
+
 export {
     createTransactionService,
     getAllTransactionsService,
     getTransactionsByIdService,
     duplicateTransactionService,
-    updateTransactionService
+    updateTransactionService,
+    deleteTransactionService
 }
