@@ -2,6 +2,8 @@ import { z } from "zod"
 import { PaymentMethodEnum, RecurringIntervalEnum, TransactionTypeEnum } from "../models/transaction.model"
 import { Transaction } from "../models/transaction.model"
 
+const transactionIdSchema = z.string().trim().min(1)
+
 const baseTransactionSchema = z.object({
     title: z.string().min(1, "Title is required!"),
     
@@ -70,6 +72,7 @@ z.infer<typeof createTransactionSchema>  automatically becomes:
 */
 
 export {
+    transactionIdSchema,
     createTransactionSchema,
     createTransactionType,
 

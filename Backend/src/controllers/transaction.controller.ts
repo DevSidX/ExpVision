@@ -1,8 +1,8 @@
 import { HttpStatus } from "../config/http.config";
 import { asyncHandler } from "../middlewares/asyncHandler.middleware";
 import { Request, Response } from "express";
-import { createTransactionSchema } from "../validators/transaction.validator";
-import { createTransactionService, getAllTransactionsService } from "../services/transaction.service";
+import { createTransactionSchema, transactionIdSchema } from "../validators/transaction.validator";
+import { createTransactionService, duplicateTransactionService, getAllTransactionsService, getTransactionsByIdService } from "../services/transaction.service";
 import { TransactionTypeEnum } from "../models/transaction.model";
 
 const createTransaction = asyncHandler( async (req: Request, res: Response) => {
@@ -48,7 +48,43 @@ const getAllTransactions = asyncHandler( async (req: Request, res: Response) => 
     )
 })
 
+const getTransactionById = asyncHandler( async (req: Request, res: Response) => {
+    const userId = req.user?._id
+
+    const transactionId = transactionIdSchema.parse(req.params?.id)
+
+    const transaction = await getTransactionsByIdService(userId, transactionId)
+
+    return res
+    .status(HttpStatus.OK)
+    .json(
+        {
+            message: "All user transaction fetched successfully!",
+            transaction
+        }
+    )
+})
+
+const duplicateTransaction = asyncHandler( async (req: Request, res: Response) => {
+    const userId = req.user?._id
+
+    const transactionId = transactionIdSchema.parse(req.params?.id)
+
+    const duplicateTransaction = await duplicateTransactionService(userId, transactionId)
+
+    return res
+    .status(HttpStatus.OK)
+    .json(
+        {
+            message: "Transaction duplicated successfully!",
+            duplicateTransaction
+        }
+    )
+})
+
 export {
     createTransaction,
-    getAllTransactions
+    getAllTransactions,
+    getTransactionById,
+    duplicateTransaction
 }

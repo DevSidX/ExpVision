@@ -1,4 +1,5 @@
 import { Transaction, TransactionTypeEnum } from "../models/transaction.model";
+import { NotFoundException } from "../utils/ApiError";
 import { calculateNextOccurance } from "../utils/calculateNextReportDate";
 import { createTransactionType } from "../validators/transaction.validator";
 
@@ -39,7 +40,7 @@ const getAllTransactionsService = async (
         type?: keyof typeof TransactionTypeEnum,
         recurringStatus?: "RECURRING" | "NON_RECURRING"
     },
-    pagination: { // ?
+    pagination: { 
         pageSize: number,
         pageNumber: number
     }
@@ -105,7 +106,47 @@ const getAllTransactionsService = async (
 
 }
 
+const getTransactionsByIdService = async (userId: string, transactionId: string) => {
+    const transaction = await Transaction.findOne({
+        _id: transactionId,
+        userId: userId
+    })
+
+    if (!transaction) {
+        throw new NotFoundException("Transaction not Found!");
+    }
+
+    return transaction
+}
+
+const duplicateTransactionService = async (userId: string, transactionId: string) => {
+    const transaction = await Transaction.findOne({
+        _id: transactionId,
+        userId: userId
+    })
+
+    if (!transaction) {
+        throw new NotFoundException("Transaction not Found!");
+    }
+
+    const duplicated = Transaction.create({
+        ...transaction.toObject(), // convert it into object
+        _id: undefined,
+        title: `Duplicate - ${transaction.title}`,
+        description: transaction.description ? `${transaction.description} (Duplicate)` : "Duplicated transaction",
+        isRecurring: false,
+        recurringInterval: undefined,
+        nextRecurringDate: undefined,
+        createdAt: undefined,
+        updatedAt: undefined
+    })
+
+    return duplicated
+}
+
 export {
     createTransactionService,
-    getAllTransactionsService
+    getAllTransactionsService,
+    getTransactionsByIdService,
+    duplicateTransactionService
 }

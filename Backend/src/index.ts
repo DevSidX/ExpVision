@@ -42,12 +42,16 @@ import loginRouter from './routes/auth.route'
 import currentUserRouter from "./routes/user.route"
 import createTransactionRouter from "./routes/transaction.route"
 import getAllTransactionRouter from "./routes/transaction.route"
+import getTransactionByIdRouter from "./routes/transaction.route"
+import duplicateTransactionRouter from "./routes/transaction.route"
 
 app.use(`${BASE_PATH}/auth`, authRouter)   // auth router
-app.use(`${BASE_PATH}/login`, loginRouter)   // auth router
-app.use(`${BASE_PATH}/user`, currentUserRouter)   // auth router
-app.use(`${BASE_PATH}/transaction`, createTransactionRouter)   // auth router
-app.use(`${BASE_PATH}/transaction`, getAllTransactionRouter)   // auth router
+app.use(`${BASE_PATH}/login`, loginRouter)   // login router
+app.use(`${BASE_PATH}/user`, currentUserRouter)   // user router
+app.use(`${BASE_PATH}/transaction`, createTransactionRouter)   // transaction router
+app.use(`${BASE_PATH}/transaction`, getAllTransactionRouter)   // transaction router
+app.use(`${BASE_PATH}/transaction`, getTransactionByIdRouter)   // transaction router
+app.use(`${BASE_PATH}/transaction`, duplicateTransactionRouter)   // transaction router
 
 
 
