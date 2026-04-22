@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createTransaction, duplicateTransaction, getAllTransactions, getTransactionById } from "../controllers/transaction.controller";
+import { createTransaction, duplicateTransaction, getAllTransactions, getTransactionById, updateTransaction } from "../controllers/transaction.controller";
 import { passportAuthenticateJwt } from "../config/passport.config";
 
 const router = Router()
@@ -22,6 +22,11 @@ router.route("/:id").get(
 router.route("/duplicate/:id").put(
     passportAuthenticateJwt,
     duplicateTransaction
+)
+
+router.route("/update/:id").put(
+    passportAuthenticateJwt,
+    updateTransaction
 )
 
 export default router

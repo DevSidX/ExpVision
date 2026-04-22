@@ -1,7 +1,7 @@
 import { Transaction, TransactionTypeEnum } from "../models/transaction.model";
 import { NotFoundException } from "../utils/ApiError";
 import { calculateNextOccurance } from "../utils/calculateNextReportDate";
-import { createTransactionType } from "../validators/transaction.validator";
+import { createTransactionType, updateTransactionType } from "../validators/transaction.validator";
 
 
 const createTransactionService = async (body: createTransactionType, userId: string) => {
@@ -144,9 +144,82 @@ const duplicateTransactionService = async (userId: string, transactionId: string
     return duplicated
 }
 
+const updateTransactionService = async (userId: string, transactionId: string, body: updateTransactionType) => {
+    const transaction = await Transaction.findOne({
+        _id: transactionId,
+        userId: userId,
+    })
+
+    if (!transaction) {
+        throw new NotFoundException("Transaction not found!");
+    }
+
+    const now = new Date()
+    
+    const isRecurring = body.isRecurring ?? transaction.isRecurring // ?? returns the right side ONLY if the left side is null or undefined
+
+    const date = body.date === undefined ? new Date(body.date) : transaction.date
+
+    const recurringInterval = body.recurringInterval || transaction.recurringInterval
+
+    let nextRecurringDate: Date | undefined
+
+    if(isRecurring && recurringInterval){
+        const calculatedDate = calculateNextOccurance(date, recurringInterval)
+
+        if(calculatedDate && calculatedDate < now){ // because calculatedDate can be Date | undefined
+            nextRecurringDate = calculateNextOccurance(now, recurringInterval)
+        } else {
+            nextRecurringDate = calculatedDate
+        }
+    }
+
+    transaction.set({
+        ...(body.title && 
+            { 
+                title:  body.title 
+            }
+        ),
+        ...(body.description && 
+            { 
+                description:  body.description 
+            }
+        ),
+        ...(body.category && 
+            { 
+                category:  body.category 
+            }
+        ),
+        ...(body.type && 
+            { 
+                type:  body.type 
+            }
+        ),
+        ...(body.paymentMethod && 
+            { 
+                paymentMethod:  body.paymentMethod 
+            }
+        ),
+        ...(body.amount !== undefined && 
+            { 
+                amount:  body.amount 
+            }
+        ),
+        date,
+        isRecurring,
+        recurringInterval,
+        nextRecurringDate
+    })
+
+    await transaction.save()
+
+    return;
+}
+
 export {
     createTransactionService,
     getAllTransactionsService,
     getTransactionsByIdService,
-    duplicateTransactionService
+    duplicateTransactionService,
+    updateTransactionService
 }

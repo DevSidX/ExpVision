@@ -1,8 +1,8 @@
 import { HttpStatus } from "../config/http.config";
 import { asyncHandler } from "../middlewares/asyncHandler.middleware";
 import { Request, Response } from "express";
-import { createTransactionSchema, transactionIdSchema } from "../validators/transaction.validator";
-import { createTransactionService, duplicateTransactionService, getAllTransactionsService, getTransactionsByIdService } from "../services/transaction.service";
+import { createTransactionSchema, transactionIdSchema, updateTransactionSchema } from "../validators/transaction.validator";
+import { createTransactionService, duplicateTransactionService, getAllTransactionsService, getTransactionsByIdService, updateTransactionService } from "../services/transaction.service";
 import { TransactionTypeEnum } from "../models/transaction.model";
 
 const createTransaction = asyncHandler( async (req: Request, res: Response) => {
@@ -82,9 +82,28 @@ const duplicateTransaction = asyncHandler( async (req: Request, res: Response) =
     )
 })
 
+const updateTransaction = asyncHandler( async (req: Request, res: Response) => {
+    const userId = req.user?._id
+
+    const transactionId = transactionIdSchema.parse(req.params.id)
+
+    const body = updateTransactionSchema.parse(req.body)
+
+    await updateTransactionService(userId, transactionId, body)
+
+    return res
+    .status(HttpStatus.OK)
+    .json(   
+        {
+            message: "Transaction updated successfully!",
+        }
+    )
+})
+
 export {
     createTransaction,
     getAllTransactions,
     getTransactionById,
-    duplicateTransaction
+    duplicateTransaction,
+    updateTransaction
 }
