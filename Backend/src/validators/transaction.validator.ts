@@ -1,0 +1,78 @@
+import { z } from "zod"
+import { PaymentMethodEnum, RecurringIntervalEnum, TransactionTypeEnum } from "../models/transaction.model"
+import { Transaction } from "../models/transaction.model"
+
+const baseTransactionSchema = z.object({
+    title: z.string().min(1, "Title is required!"),
+    
+    type: z.enum( [TransactionTypeEnum.INCOME, TransactionTypeEnum.EXPENSE],
+    {
+        errorMap: () => ({
+            message: "Transaction type must be either INCOME or EXPENCE",
+        })
+    }),
+
+    amount: z.number().positive("Amount must be positive").min(1),
+
+    category: z.string().min(1, "Category is required"),
+
+    date: z.union([
+        z.string()
+        .datetime({ message: "Invalid date string"}),
+        z.date()
+    ]).transform(val => new Date(val)),
+
+    isRecurring: z.boolean().default(false),
+
+    recurringInterval: z.enum([
+        RecurringIntervalEnum.DAILY,
+        RecurringIntervalEnum.MONTHLY,
+        RecurringIntervalEnum.WEEKLY,
+        RecurringIntervalEnum.YEARLY
+    ]).nullable().optional(),
+
+    receiptUrl: z.string().optional(),
+
+    paymentMethod: z.enum([
+        PaymentMethodEnum.AUTO_DEBIT,
+        PaymentMethodEnum.BANK_TRANSFER,
+        PaymentMethodEnum.CARD,
+        PaymentMethodEnum.CASH,
+        PaymentMethodEnum.MOBILE_PAYMENT,
+        PaymentMethodEnum.OTHER
+    ]).default(PaymentMethodEnum.CASH)
+
+})
+
+// same validation for both.
+const createTransactionSchema = baseTransactionSchema
+
+const updateTransactionSchema = baseTransactionSchema
+
+type createTransactionType = z.infer<typeof createTransactionSchema>
+
+type updateTransactionType = z.infer<typeof updateTransactionSchema>
+
+/*
+z.infer<typeof createTransactionSchema>  automatically becomes:
+
+{
+  title: string
+  type: "INCOME" | "EXPENSE"
+  amount: number
+  category: string
+  date: Date
+  isRecurring: boolean
+  recurringInterval?: ...
+  receiptUrl?: string
+  paymentMethod: ...
+}
+*/
+
+export {
+    createTransactionSchema,
+    createTransactionType,
+
+    updateTransactionSchema,
+    updateTransactionType
+}

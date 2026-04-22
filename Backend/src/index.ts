@@ -33,16 +33,21 @@ app.get('/', asyncHandler( async (req: Request, res: Response, next: NextFunctio
     .json({ message: "Welcome to the server!" })
 }))
 
-// routes IMPORT
 
+
+// routes IMPORT
 
 import authRouter from './routes/auth.route'
 import loginRouter from './routes/auth.route'
 import currentUserRouter from "./routes/user.route"
+import createTransactionRouter from "./routes/transaction.route"
+import getAllTransactionRouter from "./routes/transaction.route"
 
 app.use(`${BASE_PATH}/auth`, authRouter)   // auth router
 app.use(`${BASE_PATH}/login`, loginRouter)   // auth router
 app.use(`${BASE_PATH}/user`, currentUserRouter)   // auth router
+app.use(`${BASE_PATH}/transaction`, createTransactionRouter)   // auth router
+app.use(`${BASE_PATH}/transaction`, getAllTransactionRouter)   // auth router
 
 
 

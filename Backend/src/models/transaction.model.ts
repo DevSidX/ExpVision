@@ -7,7 +7,7 @@ export enum TransactionStatusEnum {
     FAILED = "FAILED"
 }
 
-export enum ResurringIntervalEnum {
+export enum RecurringIntervalEnum {
     DAILY = "DAILY",
     WEEKLY = "WEEKLY",
     MONTHLY = "MONTHLY",
@@ -35,7 +35,7 @@ export interface transactionDocument extends Document {
     amount: number,
     category: string,
     receiptUrl?: string,
-    recurringInterval?: keyof typeof ResurringIntervalEnum,
+    recurringInterval?: keyof typeof RecurringIntervalEnum,
     nextRecurringDate?: Date,
     lastProcessedDate?: Date,
     isRecurring: boolean,
@@ -90,7 +90,7 @@ const transactionSchema = new mongoose.Schema<transactionDocument>(
         },
         recurringInterval: {
             type: String,
-            enum: Object.values(ResurringIntervalEnum),
+            enum: Object.values(RecurringIntervalEnum),
             default: null
         },
         nextRecurringDate: {
