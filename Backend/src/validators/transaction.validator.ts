@@ -57,6 +57,27 @@ const bulkDeleteTransactionIdSchema = z.object({
                 )
 })
 
+const bulkTransactionSchema = z.object({
+    transactions: z.array(baseTransactionSchema)
+                    .min(1, "Atleast one transaction is required")
+                    .max(300, "Must not be more than 300 transactions")
+                    /*
+                    What it's trying to do:
+                    Iterate over each transaction
+                    Convert it to a number
+                    Check: positive (> 0) 
+                           not too large (≤ 1 billion)
+                    */
+                    .refine((transactions) => transactions.every((transaction) => {
+                        const amount = Number(transaction.amount)
+                        return !NaN && amount > 0 && amount <= 1_000_000_000
+                    }),
+                    {
+                        message: "Amount must be a positive number"
+                    }
+                )
+})
+
 // same validation for both.
 const createTransactionSchema = baseTransactionSchema
 
@@ -95,5 +116,8 @@ export {
     updateTransactionType,
 
     bulkDeleteTransactionIdSchema,
-    bulkDeleteTransactionType
+    bulkDeleteTransactionType,
+
+    bulkDeleteTransaction,
+    bulkTransactionSchema
 }

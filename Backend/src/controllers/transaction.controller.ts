@@ -1,8 +1,8 @@
 import { HttpStatus } from "../config/http.config";
 import { asyncHandler } from "../middlewares/asyncHandler.middleware";
 import { Request, Response } from "express";
-import { bulkDeleteTransactionIdSchema, createTransactionSchema, transactionIdSchema, updateTransactionSchema } from "../validators/transaction.validator";
-import { bulkDeleteTransactionService, createTransactionService, deleteTransactionService, duplicateTransactionService, getAllTransactionsService, getTransactionsByIdService, updateTransactionService } from "../services/transaction.service";
+import { bulkDeleteTransactionIdSchema, bulkTransactionSchema, createTransactionSchema, transactionIdSchema, updateTransactionSchema } from "../validators/transaction.validator";
+import { bulkDeleteTransactionService, bulkTransactionService, createTransactionService, deleteTransactionService, duplicateTransactionService, getAllTransactionsService, getTransactionsByIdService, updateTransactionService } from "../services/transaction.service";
 import { TransactionTypeEnum } from "../models/transaction.model";
 
 const createTransaction = asyncHandler( async (req: Request, res: Response) => {
@@ -133,6 +133,24 @@ const bulkDeleteTransaction = asyncHandler (async (req: Request, res: Response) 
     )
 })
 
+
+const bulkTransaction = asyncHandler (async (req: Request, res: Response) => {
+    const userId = req.user?._id
+    
+    const { transactions } = bulkTransactionSchema.parse(req.body)
+
+    const result = await bulkTransactionService(userId, transactions)
+
+    return res
+    .status(HttpStatus.OK)
+    .json(   
+        {
+            message: "Bulk Transaction inserted successfully!",
+            ...result
+        }
+    )
+})
+
 export {
     createTransaction,
     getAllTransactions,
@@ -140,5 +158,6 @@ export {
     duplicateTransaction,
     updateTransaction,
     deleteTransaction,
-    bulkDeleteTransaction
+    bulkDeleteTransaction,
+    bulkTransaction
 }
