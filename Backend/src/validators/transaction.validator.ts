@@ -1,6 +1,7 @@
 import { z } from "zod"
 import { PaymentMethodEnum, RecurringIntervalEnum, TransactionTypeEnum } from "../models/transaction.model"
 import { Transaction } from "../models/transaction.model"
+import { bulkDeleteTransaction } from "../controllers/transaction.controller"
 
 const transactionIdSchema = z.string().trim().min(1)
 
@@ -48,6 +49,14 @@ const baseTransactionSchema = z.object({
 
 })
 
+const bulkDeleteTransactionIdSchema = z.object({
+    transactionIds: z.array(
+                    z.string()
+                    .length(24, "Invalid Transaction Id")
+                    .min(1, "Atleast one transaction ID must be provided")
+                )
+})
+
 // same validation for both.
 const createTransactionSchema = baseTransactionSchema
 
@@ -56,6 +65,9 @@ const updateTransactionSchema = baseTransactionSchema
 type createTransactionType = z.infer<typeof createTransactionSchema>
 
 type updateTransactionType = z.infer<typeof updateTransactionSchema>
+
+type bulkDeleteTransactionType = z.infer<typeof bulkDeleteTransactionIdSchema>
+
 
 /*
 z.infer<typeof createTransactionSchema>  automatically becomes:
@@ -75,9 +87,13 @@ z.infer<typeof createTransactionSchema>  automatically becomes:
 
 export {
     transactionIdSchema,
+
     createTransactionSchema,
     createTransactionType,
 
     updateTransactionSchema,
-    updateTransactionType
+    updateTransactionType,
+
+    bulkDeleteTransactionIdSchema,
+    bulkDeleteTransactionType
 }

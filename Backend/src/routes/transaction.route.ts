@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createTransaction, deleteTransaction, duplicateTransaction, getAllTransactions, getTransactionById, updateTransaction } from "../controllers/transaction.controller";
+import { bulkDeleteTransaction, createTransaction, deleteTransaction, duplicateTransaction, getAllTransactions, getTransactionById, updateTransaction } from "../controllers/transaction.controller";
 import { passportAuthenticateJwt } from "../config/passport.config";
 
 const router = Router()
@@ -32,6 +32,11 @@ router.route("/update/:id").put(
 router.route("/delete/:id").delete(
     passportAuthenticateJwt,
     deleteTransaction
+)
+
+router.route("/bulk-delete").delete(
+    passportAuthenticateJwt,
+    bulkDeleteTransaction
 )
 
 export default router

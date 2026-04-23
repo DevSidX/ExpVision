@@ -1,7 +1,7 @@
 import { Transaction, TransactionTypeEnum } from "../models/transaction.model";
 import { NotFoundException } from "../utils/ApiError";
 import { calculateNextOccurance } from "../utils/calculateNextReportDate";
-import { createTransactionType, updateTransactionType } from "../validators/transaction.validator";
+import { bulkDeleteTransactionType, createTransactionType, updateTransactionType } from "../validators/transaction.validator";
 
 
 const createTransactionService = async (body: createTransactionType, userId: string) => {
@@ -229,11 +229,32 @@ const deleteTransactionService = async (userId: string, transactionId: string) =
     return deletedTransaction
 }
 
+const bulkDeleteTransactionService = async (userId: string, transactionIds: string[]) => {
+    const deletedTransaction = await Transaction.deleteMany({
+        _id: {
+            $in: transactionIds
+        },
+        userId: userId,
+    })
+
+    if (deletedTransaction.deletedCount === 0) {
+        throw new NotFoundException("Transaction not Found!");
+    }
+
+    return {
+        success: true,
+        deleteCount: deletedTransaction.deletedCount
+    }
+}
+
+
+
 export {
     createTransactionService,
     getAllTransactionsService,
     getTransactionsByIdService,
     duplicateTransactionService,
     updateTransactionService,
-    deleteTransactionService
+    deleteTransactionService,
+    bulkDeleteTransactionService
 }

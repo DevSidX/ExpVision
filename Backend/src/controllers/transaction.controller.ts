@@ -1,8 +1,8 @@
 import { HttpStatus } from "../config/http.config";
 import { asyncHandler } from "../middlewares/asyncHandler.middleware";
 import { Request, Response } from "express";
-import { createTransactionSchema, transactionIdSchema, updateTransactionSchema } from "../validators/transaction.validator";
-import { createTransactionService, deleteTransactionService, duplicateTransactionService, getAllTransactionsService, getTransactionsByIdService, updateTransactionService } from "../services/transaction.service";
+import { bulkDeleteTransactionIdSchema, createTransactionSchema, transactionIdSchema, updateTransactionSchema } from "../validators/transaction.validator";
+import { bulkDeleteTransactionService, createTransactionService, deleteTransactionService, duplicateTransactionService, getAllTransactionsService, getTransactionsByIdService, updateTransactionService } from "../services/transaction.service";
 import { TransactionTypeEnum } from "../models/transaction.model";
 
 const createTransaction = asyncHandler( async (req: Request, res: Response) => {
@@ -116,11 +116,29 @@ const deleteTransaction = asyncHandler( async (req: Request, res: Response) => {
     )
 })
 
+const bulkDeleteTransaction = asyncHandler (async (req: Request, res: Response) => {
+    const userId = req.user?._id
+    
+    const { transactionIds } = bulkDeleteTransactionIdSchema.parse(req.body) // all the transections id's of a userwhich we want to delete
+
+    const result = await bulkDeleteTransactionService(userId, transactionIds)
+
+    return res
+    .status(HttpStatus.OK)
+    .json(   
+        {
+            message: "Bulk Transaction deleted successfully!",
+            ...result
+        }
+    )
+})
+
 export {
     createTransaction,
     getAllTransactions,
     getTransactionById,
     duplicateTransaction,
     updateTransaction,
-    deleteTransaction
+    deleteTransaction,
+    bulkDeleteTransaction
 }
