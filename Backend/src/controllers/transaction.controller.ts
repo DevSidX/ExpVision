@@ -2,7 +2,7 @@ import { HttpStatus } from "../config/http.config";
 import { asyncHandler } from "../middlewares/asyncHandler.middleware";
 import { Request, Response } from "express";
 import { bulkDeleteTransactionIdSchema, bulkTransactionSchema, createTransactionSchema, transactionIdSchema, updateTransactionSchema } from "../validators/transaction.validator";
-import { bulkDeleteTransactionService, bulkTransactionService, createTransactionService, deleteTransactionService, duplicateTransactionService, getAllTransactionsService, getTransactionsByIdService, updateTransactionService } from "../services/transaction.service";
+import { bulkDeleteTransactionService, bulkTransactionService, createTransactionService, deleteTransactionService, duplicateTransactionService, getAllTransactionsService, getTransactionsByIdService, scanReceiptService, updateTransactionService } from "../services/transaction.service";
 import { TransactionTypeEnum } from "../models/transaction.model";
 
 const createTransaction = asyncHandler( async (req: Request, res: Response) => {
@@ -133,7 +133,6 @@ const bulkDeleteTransaction = asyncHandler (async (req: Request, res: Response) 
     )
 })
 
-
 const bulkTransaction = asyncHandler (async (req: Request, res: Response) => {
     const userId = req.user?._id
     
@@ -151,6 +150,22 @@ const bulkTransaction = asyncHandler (async (req: Request, res: Response) => {
     )
 })
 
+const scanReceipt = asyncHandler (async (req: Request, res: Response) => {
+    const file = req?.file
+
+    const result = await scanReceiptService(file)
+
+    return res
+    .status(HttpStatus.OK)
+    .json(
+        {
+            message: "Receipts scan successfully!",
+            data: result
+        }
+    )
+})
+
+
 export {
     createTransaction,
     getAllTransactions,
@@ -159,5 +174,6 @@ export {
     updateTransaction,
     deleteTransaction,
     bulkDeleteTransaction,
-    bulkTransaction
+    bulkTransaction,
+    scanReceipt
 }

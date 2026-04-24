@@ -1,6 +1,7 @@
 import { Router } from "express";
-import { bulkDeleteTransaction, bulkTransaction, createTransaction, deleteTransaction, duplicateTransaction, getAllTransactions, getTransactionById, updateTransaction } from "../controllers/transaction.controller";
+import { bulkDeleteTransaction, bulkTransaction, createTransaction, deleteTransaction, duplicateTransaction, getAllTransactions, getTransactionById, scanReceipt, updateTransaction } from "../controllers/transaction.controller";
 import { passportAuthenticateJwt } from "../config/passport.config";
+import { uploadOnCloudinary } from "../config/cloudinary.config";
 
 const router = Router()
 
@@ -36,6 +37,11 @@ router.route("/bulk-delete").delete(
 
 router.route("/bulk-transaction").post(
     bulkTransaction
+)
+
+router.route("/scan-receipt").post(
+    uploadOnCloudinary.single("receipt"),
+    scanReceipt
 )
 
 export default router

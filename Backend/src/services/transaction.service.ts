@@ -1,7 +1,11 @@
 import { Transaction, TransactionTypeEnum } from "../models/transaction.model";
-import { NotFoundException } from "../utils/ApiError";
+import { BadRequestException, NotFoundException } from "../utils/ApiError";
 import { calculateNextOccurance } from "../utils/calculateNextReportDate";
-import { bulkDeleteTransactionType, createTransactionType, updateTransactionType } from "../validators/transaction.validator";
+import { createTransactionType, updateTransactionType } from "../validators/transaction.validator";
+import axios from 'axios'
+import { genAi, genAiModel } from "../config/google-Ai.config";
+import { createPartFromBase64, createUserContent } from "@google/genai";
+import { receiptPrompt } from "../utils/prompt.utils";
 
 
 const createTransactionService = async (body: createTransactionType, userId: string) => {
@@ -276,6 +280,87 @@ const bulkTransactionService = async (userId: string, transactions: createTransa
     }
 }
 
+const scanReceiptService = async (file: Express.Multer.File | undefined) => {
+    if (!file) {
+        throw new BadRequestException("No file uploaded")
+    }
+
+    try {
+        if(!file.path){
+            throw new BadRequestException("Failed to upload file")
+        }
+
+        console.log(file.path);
+
+        const responseData = await axios.get(
+            file.path, // get request to get the file path from cloudinary
+            {
+                responseType: "arraybuffer",
+            }
+        );
+
+        const base64String = Buffer
+        .from(responseData.data)
+        .toString("base64")
+
+        if(!base64String){
+            throw new BadRequestException("Couldn't process the file")
+        }
+
+        console.log("STEP 6: calling Gemini with mime →", file.mimetype);
+        const result = await genAi.models.generateContent({
+            model: genAiModel,
+            contents: [
+                createUserContent([
+                    receiptPrompt,
+                    createPartFromBase64(base64String, file.mimetype)
+                ])
+            ],
+            // Use this config only used when we need strict, predictable, machine-readable output — not for general-purpose AI usage.
+            config: {
+                temperature: 0,  // Controls randomness (creativity) of the output.
+                topP: 1,       // nucleus sampling (probability mass selection).
+                responseMimeType: "application/json"   // Forces the model to return output in valid JSON format
+            }
+        })
+
+        const response = result.text
+        
+        const cleanedText = response?.replace(/```(?:json)?\n?/g, "").trim()
+
+        if(!cleanedText){
+            return {
+                message: "Couldn't read recipt content!"
+            }
+        }
+
+        const data = JSON.parse(cleanedText)
+
+        console.log("STEP 10: parsed data →", data);
+
+        if(!data?.amount || !data.date){
+            return {
+                error: "Receipt missing required information..."
+            }
+        }
+
+        return {
+            title: data.title || "Receipt ",
+            amount: data.amount,
+            date: data.date, 
+            description: data.description,    
+            category: data.category,     
+            type: data.type,
+            paymentMethod: data.paymentMethod,
+            receiptUrl: file.path, 
+        }
+    } catch (error) {
+        return {
+            error: "Receipt scanning service unavilable"
+        }        
+    }
+}
+
 export {
     createTransactionService,
     getAllTransactionsService,
@@ -284,5 +369,6 @@ export {
     updateTransactionService,
     deleteTransactionService,
     bulkDeleteTransactionService,
-    bulkTransactionService
+    bulkTransactionService,
+    scanReceiptService
 }
