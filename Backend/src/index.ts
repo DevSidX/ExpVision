@@ -10,7 +10,7 @@ import { BadRequestException } from "./utils/ApiError"
 import { asyncHandler } from "./middlewares/asyncHandler.middleware"
 import connectDb from "./db/database";
 import passport from "passport";
-
+import { initilizeCrons } from "./crons";
 
 const app = express()
 const BASE_PATH = Env.BASE_PATH
@@ -32,7 +32,6 @@ app.get('/', asyncHandler( async (req: Request, res: Response, next: NextFunctio
     .status(HttpStatus.OK)
     .json({ message: "Welcome to the server!" })
 }))
-
 
 
 // routes IMPORT
@@ -67,6 +66,11 @@ app.use(errorHandler)
 
 app.listen(Env.PORT, async () => {
     await connectDb()
+
+    if(Env.NODE_ENV === "development"){
+        await initilizeCrons()
+    }
+    
     console.log(`Server is running on port ${Env.PORT} in ${Env.NODE_ENV} mode.`)
 })
 
