@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getAllReports, updateReportSettings } from "../controllers/report.controller";
+import { generateReport, getAllReports, updateReportSettings } from "../controllers/report.controller";
 import { passportAuthenticateJwt } from "../config/passport.config";
 
 const router = Router()
@@ -13,5 +13,11 @@ router.route("/all").get(
 router.route("/update-setting").put(
     updateReportSettings
 )
+
+router.route("/generate").get(
+    generateReport
+)
+
+
 
 export default router
