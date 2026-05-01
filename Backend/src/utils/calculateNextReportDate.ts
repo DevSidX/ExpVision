@@ -10,6 +10,7 @@ function calculateNextReportDate (lastSentDate?: Date): Date {
     const nextDate = startOfMonth(addMonths(lastSent, 1))
     nextDate.setHours(0,0,0,0)
 
+    console.log(nextDate, "next Date");
     return nextDate
 }
 
@@ -38,7 +39,15 @@ function calculateNextOccurance(date: Date, recurringInterval:keyof typeof Recur
     }
 }
 
+function capitalizeFirstLetter(string: string) {
+    return string
+        .charAt(0)
+        .toUpperCase() + string.slice(1)
+        .toLowerCase()
+}
+
 export {
     calculateNextReportDate,
-    calculateNextOccurance
+    calculateNextOccurance,
+    capitalizeFirstLetter
 }

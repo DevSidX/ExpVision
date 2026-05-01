@@ -69,6 +69,8 @@ const updateReportSettingsService = async (userId: string, body: updateReportSet
         }
     }
 
+    console.log(nextReportDate, "next Report Date");
+    
     existingReportsSettings.set({
         ...body,
         nextReportDate
@@ -205,7 +207,7 @@ const generateReportService = async (userId: string ,fromDate: Date ,toDate: Dat
                 (([name, category]: any) => ({
                     name,
                     amount: category.amount,
-                    percent: category.percentage
+                    percentage: category.percentage
                 }))
             )
         },

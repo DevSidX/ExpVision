@@ -11,7 +11,15 @@ function convertPaiseToRupee(paise: number): number {
     return paise / 100;
 }
 
+function formatCurrency(amount: number) {
+    return new Intl.NumberFormat("en-IN",{
+        style: "currency",
+        currency: "INR"
+    }).format(amount)
+}
+
 export {
     convertRupeeToPaise,
-    convertPaiseToRupee
+    convertPaiseToRupee,
+    formatCurrency
 }

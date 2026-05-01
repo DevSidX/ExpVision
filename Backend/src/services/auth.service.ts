@@ -28,8 +28,8 @@ const registerService = async (body: registerSchemaType) => {
             userId: newUser._id,
             frequency: ReportFrequencyEnum.MONTHLY,
             isEnabled: true,
-            lastSentDate: null,
             nextReportDate: calculateNextReportDate (),
+            lastSentDate: null,
         });
 
         await newUser.save({ session })  
