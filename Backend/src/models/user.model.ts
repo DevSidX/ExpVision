@@ -30,6 +30,10 @@ const userSchema = new mongoose.Schema<userDocument> (
             type: String,
             select: true,
             required: true,
+        },
+        profilePicture: {
+            type: String,
+            default: null
         }
     },
     {
