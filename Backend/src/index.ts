@@ -11,6 +11,8 @@ import { asyncHandler } from "./middlewares/asyncHandler.middleware"
 import connectDb from "./db/database";
 import passport from "passport";
 import { initilizeCrons } from "./crons";
+import { getDateRange } from "./utils/date";
+
 
 const app = express()
 const BASE_PATH = Env.BASE_PATH
@@ -42,6 +44,7 @@ import currentUserRouter from "./routes/user.route"
 import createTransactionRouter from "./routes/transaction.route"
 import getAllTransactionRouter from "./routes/transaction.route"
 import reportSettingsRouter from "./routes/reportSettings.route"
+import analyticsSummaryRouter from "./routes/analytics.route"
 
 
 app.use(`${BASE_PATH}/auth`, authRouter)   // auth router
@@ -50,8 +53,12 @@ app.use(`${BASE_PATH}/user`, currentUserRouter)   // user router
 app.use(`${BASE_PATH}/transaction`, createTransactionRouter)   // transaction router
 app.use(`${BASE_PATH}/transaction`, getAllTransactionRouter)   // transaction router
 app.use(`${BASE_PATH}/report`, reportSettingsRouter)   // reportSettings router
+app.use(`${BASE_PATH}/analytics`, analyticsSummaryRouter)   // reportSettings router
 
 
+
+const data = getDateRange("last3Months")
+console.log(data, "data message");
 
 
 app.use(errorHandler)
