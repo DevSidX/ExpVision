@@ -37,21 +37,21 @@ const getDateRange = (
         case DateRangeEnum.LAST_MONTH:
             return {
                 from: startOfMonth(subMonths(now, 1)),
-                to: endOfMonth(now),
+                to: endOfMonth(subMonths(now, 1)),
                 value: DateRangeEnum.LAST_MONTH,
                 label: "Last Month"
             }
         case DateRangeEnum.LAST_3_MONTHS:
             return {
                 from: startOfMonth(subMonths(now, 3)),
-                to: endOfMonth(now),
+                to: endOfMonth(subMonths(now, 1)),
                 value: DateRangeEnum.LAST_3_MONTHS,
                 label: "Last 3 Month"
             }
         case DateRangeEnum.LAST_YEAR:
             return {
                 from: startOfYear(subYears(now, 1)),
-                to: endOfYear(now),
+                to: endOfYear(subYears(now, 1)),
                 value: DateRangeEnum.LAST_YEAR,
                 label: "Last Year"
             }

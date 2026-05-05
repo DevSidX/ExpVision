@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { chartAnalytics, summaryAnalytics } from "../controllers/analytics.controller";
+import { chartAnalytics, expencePieChartBreakdown, summaryAnalytics } from "../controllers/analytics.controller";
 import { passportAuthenticateJwt } from "../config/passport.config";
 
 const router = Router()
@@ -12,6 +12,10 @@ router.route("/summary").get(
 
 router.route("/chart").get(
     chartAnalytics
+)
+
+router.route("/expenceBreakdown").get(
+    expencePieChartBreakdown
 )
 
 export default router

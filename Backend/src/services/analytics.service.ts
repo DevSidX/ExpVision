@@ -1,4 +1,4 @@
-import mongoose from "mongoose"
+import mongoose, { PipelineStage } from "mongoose"
 import { DateRangeEnum, DateRangePreset } from "../enums/date-range.enum"
 import { Transaction, TransactionTypeEnum } from "../models/transaction.model"
 import { getDateRange } from "../utils/date"
@@ -16,7 +16,7 @@ const summaryAnalyticsService = async (
 
     const { from, to, value: rangeValue } = range
 
-    const currentPeriodPipeline: any[] = [
+    const currentPeriodPipeline: PipelineStage[] = [
         {  // userId must match and date must be between from and to (only if both exist)
             $match: {  
                 userId: new mongoose.Types.ObjectId(userId),
@@ -389,7 +389,141 @@ const chartAnalyticsService = async (
     }
 }
 
+const expencePieChartBreakdownService = async (
+    userId: string, 
+    dateRangePreset?: DateRangePreset, 
+    customFrom?: Date, 
+    customTo?: Date
+) => {
+
+    const range = getDateRange(dateRangePreset, customFrom, customTo)
+
+    const { from, to, value: rangeValue } = range
+
+    const filter: any = {
+        userId: new mongoose.Types.ObjectId(userId),
+        type: TransactionTypeEnum.EXPENSE,
+        ...(from && to && { date: {
+            $gte: from,
+            $lte: to
+        }})
+    }
+
+    const pipeline: PipelineStage[] = [
+        {
+            $match: filter
+        },
+        { // grouping the transactions category wise and summing the amount per category
+            $group: {
+                _id: "$category",
+                value: { 
+                    $sum: {
+                        $abs: "$amount"
+                    }
+                }
+            }
+        },
+        { $sort: { value: -1 } },
+        {  // facet is usedwhen we want to execute multiple analytics in one aggregation
+            $facet: {
+                topThree: [{ $limit: 3 }],
+                others: [
+                    { 
+                        $skip: 3 
+                    },
+                    {
+                        $group: {
+                            _id: "others",
+                            value: {
+                                $sum: "$value"
+                            }
+                        }
+                    }
+                ]
+            },
+        },
+        {
+            $project: {
+                categories:{
+                    $concatArrays: ["$topThree", "$others"]
+                }
+            }
+        },
+        { 
+            $unwind: "$categories" 
+        },
+        {
+            $group: {
+                _id: null,
+                totalSpent: { $sum: "$categories.value" },
+                breakdown: { $push: "$categories" }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                totalSpent: 1,
+                breakdown: {
+                    // .map(() => )
+                    $map: {
+                        input: "$breakdown",
+                        as: "category",
+                        in: {
+                            name: "$$category._id",
+                            value: "$$category.value",
+                            percentage: {
+                                $cond: [
+                                    {
+                                        $eq: ["$totalSpent", 0],
+                                    },
+                                    0,
+                                    {
+                                        $round: [
+                                            {
+                                                $multiply: [
+                                                    {
+                                                        $divide: ["$$category.value","$totalSpent"]
+                                                    },
+                                                    100
+                                                ]
+                                            },
+                                            0
+                                        ]
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    ]
+
+    const result =  await Transaction.aggregate(pipeline)
+
+    const resultData = result[0] || { totalSpent: 0, breakdown: [] }
+
+    const transformedData = {
+        totalSpent: convertPaiseToRupee(resultData.totalSpent),
+        breakdown: (resultData.breakdown || [])
+        .map((item: any) => ({
+            ...item,
+            value: convertPaiseToRupee(item.value)
+        }))
+    }
+
+    return {
+        ...transformedData,
+        preset: {
+            ...range,
+            value: rangeValue || DateRangeEnum.ALL_TIME,
+            label: range?.label || "All Time"
+        }
+    }
+}
+
 export {
     summaryAnalyticsService,
-    chartAnalyticsService
+    chartAnalyticsService,
+    expencePieChartBreakdownService
 }
