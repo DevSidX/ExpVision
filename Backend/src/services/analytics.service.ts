@@ -261,6 +261,135 @@ function calcPercentageChange (prev: number, curr: number) {
     return parseFloat(cappedChanges.toFixed(2))
 }
 
+const chartAnalyticsService = async (
+    userId: string, 
+    dateRangePreset?: DateRangePreset, 
+    customFrom?: Date, 
+    customTo?: Date
+) => {
+    const range = getDateRange(dateRangePreset, customFrom, customTo)
+
+    const { from, to, value: rangeValue } = range
+
+    const filter: any = { // filter on the basis on userId and date range
+        userId: new mongoose.Types.ObjectId(userId),
+        ...(from && to && { 
+            date: {
+                $gte: from,
+                $lte: to
+            }
+        })
+    }
+
+    const result = await Transaction.aggregate([
+        {
+            $match: filter
+        },
+        { // group transactions by dates (YYYY-MM-DD)
+            $group: {
+                _id: {
+                    $dateToString: {
+                        format: "%Y-%m-%d",
+                        date: "$date"
+                    }
+                },
+                income: {
+                    $sum: {
+                        $cond: [
+                            { $eq: ["$type", TransactionTypeEnum.INCOME] }, // checks if the document ( type ) matches income value
+                            { $abs: ["$amount"] }, // then 
+                            0 // else
+                        ]
+                    }
+                },
+                expence: {
+                    $sum: {
+                        $cond: [
+                            { $eq: ["$type" , TransactionTypeEnum.EXPENSE] },
+                            { $abs: ["$amount"]},
+                            0
+                        ]
+                    }
+                },
+                incomeCount: {
+                    $sum: {
+                        $cond: [
+                            { $eq: ["$type", TransactionTypeEnum.INCOME] },
+                            1, // if the output matches
+                            0  // if ir doesn't
+                        ]
+                    }
+                },
+                expenceCount: {
+                    $sum: {
+                        $cond: [
+                            { $eq: ["$type", TransactionTypeEnum.EXPENSE] },
+                            1, // if the output matches
+                            0  // if ir doesn't
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            $sort: { _id: 1 } // sort in ascending 
+        },
+        {
+            $project: {
+                _id: 0,
+                date: "$_id",
+                income: 1,
+                expence: 1,
+                incomeCount: 1,
+                expenceCount: 1,
+            }
+        },
+        {
+            $group: {
+                _id: null,
+                chartData: { 
+                    $push: "$$ROOT", // to reference the entire document currently being processed
+                },
+                totalIncomeCount: {
+                    $sum: "$incomeCount"        
+                },
+                totalExpenceCount: {
+                    $sum: "$expenceCount"        
+                }
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                chartData: 1,
+                totalIncomeCount: 1,
+                totalExpenceCount: 1,
+            }
+        }
+    ])
+
+    const resultData = result[0] || {}
+
+    const transformedData = (resultData?.chartData || [])
+    .map((item: any) => ({
+        date: item.date,
+        income: convertPaiseToRupee(item.income),
+        expence: convertPaiseToRupee(item.expence)
+    }))
+
+    return {
+        chartData: transformedData,
+        totalIncomeCount: resultData.totalIncomeCount,
+        totalExpenceCount: resultData.totalExpenceCount,
+        preset: {
+            ...range,
+            value: rangeValue || DateRangeEnum.ALL_TIME,
+            label: range?.label || "All Time"
+        }
+    }
+}
+
 export {
-    summaryAnalyticsService
+    summaryAnalyticsService,
+    chartAnalyticsService
 }
