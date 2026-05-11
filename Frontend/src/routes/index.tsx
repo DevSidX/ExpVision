@@ -2,6 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { authenticationRoutePaths, protectedRoutePaths } from "./common/routes"
 import AuthRoute from './authRoute';
 import ProtectedRoute from './protectedRoutes';
+import { AppLayout } from '../layouts/app-layout';
 
 function AppRoutes() {
     useAuthExpiration();
