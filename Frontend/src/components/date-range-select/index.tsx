@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { format, subDays, subMonths, subYears, startOfMonth, startOfYear, endOfDay } from "date-fns";
-import { Button } from "@/components/ui/button";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { cn } from "@/lib/utils";
+import { Button } from "../ui/button"
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
+import { cn } from "../../lib/utils";
 import { ChevronDownIcon } from "lucide-react";
 
 export const DateRangeEnum = {

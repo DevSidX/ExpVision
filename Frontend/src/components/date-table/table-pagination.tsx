@@ -1,6 +1,6 @@
 import { ChevronLeft, ChevronRight, } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "../ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
 
 interface DataTablePaginationProps {
     pageNumber: number;

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Menu } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import { PROTECTED_ROUTES } from "../../routes/common/routePath"
-import { cn } from "@/lib/utils";
+import { cn } from "../../lib/utils";
 import Logo from "../logo/logo";
 import { Button } from "../ui/button"
 import { Sheet, SheetContent } from "../ui/sheet"
