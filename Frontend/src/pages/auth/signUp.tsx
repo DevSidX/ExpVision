@@ -1,7 +1,7 @@
 import SignUpForm from "./_component/signUpForm";
 import Logo from "../../components/logo/logo";
-import dashboardImg from "../../assets/images/dashboard_.png";
-import dashboardImgDark from "../../assets/images/dashboard_dark.png";
+import dashboardImg from "../../assets/dashboard_.png"
+import dashboardImgDark from "../../assets/dashboard_dark.png"
 import { useTheme } from "../../context/theme-provider";
 
 const SignUp = () => {
