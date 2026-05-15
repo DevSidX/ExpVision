@@ -2,7 +2,7 @@
 type ReportType = {
     period: string
     totalIncome: number
-    totalExpence: number
+    totalExpense: number
     availableBalance: number   
     savingsRate: number
     topSpendingCategories: Array<{ name: string, percentage: number }>

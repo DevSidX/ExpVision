@@ -61,7 +61,7 @@ const processReportJob = async () => {
                             report: {
                                 period: report.period,
                                 totalIncome: report.summary.income,
-                                totalExpence: report.summary.expense,
+                                totalExpense: report.summary.expense,
                                 availableBalance: report.summary.balance,
                                 savingsRate: report.summary.savingsRate,
                                 topSpendingCategories: report.summary.topCategories,

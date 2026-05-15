@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { asyncHandler } from "../middlewares/asyncHandler.middleware";
 import { HttpStatus } from "../config/http.config";
 import { DateRangePreset } from "../enums/date-range.enum";
-import { chartAnalyticsService, expencePieChartBreakdownService, summaryAnalyticsService } from "../services/analytics.service";
+import { chartAnalyticsService, expensePieChartBreakdownService, summaryAnalyticsService } from "../services/analytics.service";
 
 const summaryAnalytics = asyncHandler( async (req: Request, res: Response) => {
     const userId = req.user?._id
@@ -50,7 +50,7 @@ const chartAnalytics = asyncHandler( async (req: Request, res: Response) => {
     )
 })
 
-const expencePieChartBreakdown = asyncHandler( async (req: Request, res: Response) => {
+const expensePieChartBreakdown = asyncHandler( async (req: Request, res: Response) => {
     const userId = req.user?._id
 
     const { preset, from, to } = req.query
@@ -61,13 +61,13 @@ const expencePieChartBreakdown = asyncHandler( async (req: Request, res: Respons
         customTo: to ? new Date(to as string) : undefined // only return records inside this date range
     }
 
-    const chartData = await expencePieChartBreakdownService(userId, filter.dateRangePreset, filter.customFrom, filter.customTo)
+    const chartData = await expensePieChartBreakdownService(userId, filter.dateRangePreset, filter.customFrom, filter.customTo)
 
     return res
     .status(HttpStatus.OK)
     .json(
         {
-            message: "Expence breakdown fetched successfully!",
+            message: "Expense breakdown fetched successfully!",
             data: chartData
         }
     )
@@ -78,5 +78,5 @@ const expencePieChartBreakdown = asyncHandler( async (req: Request, res: Respons
 export {
     summaryAnalytics,
     chartAnalytics,
-    expencePieChartBreakdown
+    expensePieChartBreakdown
 }

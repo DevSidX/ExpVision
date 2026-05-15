@@ -13,7 +13,7 @@ const baseTransactionSchema = z.object({
     type: z.enum( [TransactionTypeEnum.INCOME, TransactionTypeEnum.EXPENSE],
     {
         errorMap: () => ({
-            message: "Transaction type must be either INCOME or EXPENCE",
+            message: "Transaction type must be either INCOME or EXPENSE",
         })
     }),
 

@@ -40,7 +40,7 @@ const summaryAnalyticsService = async (
                         ]
                     }
                 },
-                totalExpence: {
+                totalExpense: {
                     $sum: {
                         $cond: [
                             { $eq: ["$type", TransactionTypeEnum.EXPENSE] },
@@ -56,11 +56,11 @@ const summaryAnalyticsService = async (
             $project: {
                 _id: 0,
                 totalIncome: 1,
-                totalExpence: 1,
+                totalExpense: 1,
                 transactionCount: 1,
 
                 availableBalance: {
-                    $subtract: [ "$totalIncome" , "$totalExpence"] // total income - totalExpence
+                    $subtract: [ "$totalIncome" , "$totalExpense"] // total income - totalExpense
                 },
 
                 savingsData: {
@@ -69,8 +69,8 @@ const summaryAnalyticsService = async (
                             income: {
                                 $ifNull: ["$totalIncome", 0]
                             },
-                            expence: {
-                                $ifNull: ["$totalExpence", 0]
+                            expense: {
+                                $ifNull: ["$totalExpense", 0]
                             }
                         },
                         in: { // if income is less then equal to 0 then the savingpercentage is 0
@@ -83,7 +83,7 @@ const summaryAnalyticsService = async (
                                             {
                                                 $divide: [
                                                     {
-                                                        $subtract: ["$$income", "$$expence"] // subtract expense from income
+                                                        $subtract: ["$$income", "$$expense"] // subtract expense from income
                                                     },
                                                     "$$income" // divide by orignal income
                                                 ]
@@ -93,15 +93,15 @@ const summaryAnalyticsService = async (
                                     }
                                 ]
                             },
-                            // expence ratio = ( expence / income ) * 100
-                            expenceRatio: {
+                            // expense ratio = ( expense / income ) * 100
+                            expenseRatio: {
                                 $cond: [
                                     { $lte: [ "$$income", 0 ] }, // if the income is not less then and equal to 0
                                     0,
                                     {
                                         $multiply: [
                                             {
-                                                $divide: ["$$expence", "$$income"], 
+                                                $divide: ["$$expense", "$$income"], 
                                             },
                                             100
                                         ]
@@ -120,11 +120,11 @@ const summaryAnalyticsService = async (
 
     const { 
         totalIncome = 0, 
-        totalExpence = 0, 
+        totalExpense = 0, 
         transactionCount = 0, 
         availableBalance = 0, 
         savingsData = {
-            expenceRatio: 0,
+            expenseRatio: 0,
             savingPercentage: 0
         } 
     } = current || {} // destructuring values from the current object
@@ -134,13 +134,13 @@ const summaryAnalyticsService = async (
 
     let percentageChange: any = {
         income: 0,
-        expence: 0,
+        expense: 0,
         balance: 0,
         prevPeriodFrom: null,
         prevPeriodTo: null,
         prevValues: {
             incomeAmount: 0,
-            expenceAmount: 0,
+            expenseAmount: 0,
             balanceAmount: 0
         }
     }
@@ -184,7 +184,7 @@ const summaryAnalyticsService = async (
                             ]
                         }
                     },
-                    totalExpence: {
+                    totalExpense: {
                         $sum: {
                             $cond: [
                                 { $eq: ["$type", TransactionTypeEnum.EXPENSE] },
@@ -202,22 +202,22 @@ const summaryAnalyticsService = async (
 
         if(previous) {
             const prevIncome = previous.totalIncome || 0
-            const prevExpence = previous.totalExpence || 0
-            const prevBalance = prevIncome - prevExpence
+            const prevExpense = previous.totalExpense || 0
+            const prevBalance = prevIncome - prevExpense
 
             const currIncome = totalIncome
-            const currExpence = totalExpence
+            const currExpense = totalExpense
             const currBalance = availableBalance
 
             percentageChange = {
                 income: calcPercentageChange(prevIncome, currIncome),
-                expence: calcPercentageChange(prevExpence, currExpence),
+                expense: calcPercentageChange(prevExpense, currExpense),
                 balance: calcPercentageChange(prevBalance, currBalance),
                 prevPeriodFrom: prevPeriodFrom,
                 prevPeriodTo: prevPeriodTo,
                 prevValues: {
                     incomeAmount: prevIncome,
-                    expenceAmount: prevExpence,
+                    expenseAmount: prevExpense,
                     balanceAmount:  prevBalance
                 }
             }
@@ -227,17 +227,17 @@ const summaryAnalyticsService = async (
     return {
         availableBalance: convertPaiseToRupee(availableBalance),
         totalIncome: convertPaiseToRupee(totalIncome),
-        totalExpence: convertPaiseToRupee(totalExpence),
+        totalExpense: convertPaiseToRupee(totalExpense),
         savingRate: {
             percentage: parseFloat(savingsData.savingPercentage.toFixed(2)),
-            expenceRatio: parseFloat(savingsData.expenceRatio.toFixed(2)),
+            expenseRatio: parseFloat(savingsData.expenseRatio.toFixed(2)),
         },
         transactionCount,
         percentageChange: {
             ...percentageChange,
             prevValues: {
                 incomeAmount: convertPaiseToRupee(percentageChange.prevValues.incomeAmount),
-                expenceAmount: convertPaiseToRupee(percentageChange.prevValues.expenceAmount),
+                expenseAmount: convertPaiseToRupee(percentageChange.prevValues.expenseAmount),
                 balanceAmount: convertPaiseToRupee(percentageChange.prevValues.balanceAmount)
             }
         },
@@ -302,7 +302,7 @@ const chartAnalyticsService = async (
                         ]
                     }
                 },
-                expence: {
+                expense: {
                     $sum: {
                         $cond: [
                             { $eq: ["$type" , TransactionTypeEnum.EXPENSE] },
@@ -320,7 +320,7 @@ const chartAnalyticsService = async (
                         ]
                     }
                 },
-                expenceCount: {
+                expenseCount: {
                     $sum: {
                         $cond: [
                             { $eq: ["$type", TransactionTypeEnum.EXPENSE] },
@@ -339,9 +339,9 @@ const chartAnalyticsService = async (
                 _id: 0,
                 date: "$_id",
                 income: 1,
-                expence: 1,
+                expense: 1,
                 incomeCount: 1,
-                expenceCount: 1,
+                expenseCount: 1,
             }
         },
         {
@@ -353,8 +353,8 @@ const chartAnalyticsService = async (
                 totalIncomeCount: {
                     $sum: "$incomeCount"        
                 },
-                totalExpenceCount: {
-                    $sum: "$expenceCount"        
+                totalExpenseCount: {
+                    $sum: "$expenseCount"        
                 }
             }
         },
@@ -363,7 +363,7 @@ const chartAnalyticsService = async (
                 _id: 0,
                 chartData: 1,
                 totalIncomeCount: 1,
-                totalExpenceCount: 1,
+                totalExpenseCount: 1,
             }
         }
     ])
@@ -374,13 +374,13 @@ const chartAnalyticsService = async (
     .map((item: any) => ({
         date: item.date,
         income: convertPaiseToRupee(item.income),
-        expence: convertPaiseToRupee(item.expence)
+        expense: convertPaiseToRupee(item.expense)
     }))
 
     return {
         chartData: transformedData,
         totalIncomeCount: resultData.totalIncomeCount,
-        totalExpenceCount: resultData.totalExpenceCount,
+        totalExpenseCount: resultData.totalExpenseCount,
         preset: {
             ...range,
             value: rangeValue || DateRangeEnum.ALL_TIME,
@@ -389,7 +389,7 @@ const chartAnalyticsService = async (
     }
 }
 
-const expencePieChartBreakdownService = async (
+const expensePieChartBreakdownService = async (
     userId: string, 
     dateRangePreset?: DateRangePreset, 
     customFrom?: Date, 
@@ -525,5 +525,5 @@ const expencePieChartBreakdownService = async (
 export {
     summaryAnalyticsService,
     chartAnalyticsService,
-    expencePieChartBreakdownService
+    expensePieChartBreakdownService
 }

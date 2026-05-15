@@ -6,7 +6,7 @@ const getReportEmailTemplate = (
     reportData: ReportType & { username: string },
     frequency:string, 
 ) => {
-    const { username, period, totalIncome, totalExpence, availableBalance, savingsRate, topSpendingCategories, insights } = reportData
+    const { username, period, totalIncome, totalExpense, availableBalance, savingsRate, topSpendingCategories, insights } = reportData
 
     const reportTitle = `${capitalizeFirstLetter(frequency)} Report `
 
@@ -54,7 +54,7 @@ const getReportEmailTemplate = (
                    </tr>
                    <tr>
                      <td style="padding: 8px 0; font-size: 16px;"><strong>Total Expenses:</strong></td>
-                     <td style="text-align: right; font-size: 16px;">${formatCurrency(totalExpence)}</td>
+                     <td style="text-align: right; font-size: 16px;">${formatCurrency(totalExpense)}</td>
                    </tr>
                    <tr>
                      <td style="padding: 8px 0; font-size: 16px;"><strong>Available Balance:</strong></td>
