@@ -1,99 +1,125 @@
-import { _TRANSACTION_FREQUENCY, _TransactionType, PAYMENT_METHODS_ENUM } from "@/constant";
+import { apiClient } from "../../app/api-client";
+import type {
+  AIScanReceiptResponse,
+  BulkImportTransactionPayload,
+  CreateTransactionBody,
+  GetAllTransactionParams,
+  GetAllTransactionResponse,
+  GetSingleTransactionResponse,
+  UpdateTransactionPayload,
+} from "./transactionType";
 
-type RecurringIntervalType =
-  (typeof _TRANSACTION_FREQUENCY)[keyof typeof _TRANSACTION_FREQUENCY];
-type PaymentMethodType =
-  (typeof PAYMENT_METHODS_ENUM)[keyof typeof PAYMENT_METHODS_ENUM];
+export const transactionApi = apiClient.injectEndpoints({
+  endpoints: (builder) => ({
+    createTransaction: builder.mutation<void, CreateTransactionBody>({
+      query: (body) => ({
+        url: "/transaction/create",
+        method: "POST",
+        body: body,
+      }),
+      invalidatesTags: ["transactions", "analytics"],
+    }),
 
-export interface CreateTransactionBody {
-  title: string;
-  type: _TransactionType;
-  amount: number;
-  description: string;
-  category: string;
-  date: string;
-  isRecurring: boolean;
-  recurringInterval?: RecurringIntervalType | null;
-  paymentMethod: string;
-}
+    aiScanReceipt: builder.mutation<AIScanReceiptResponse, FormData>({
+      query: (formData) => ({
+        url: "/transaction/scan-receipt",
+        method: "POST",
+        body: formData,
+      }),
+    }),
 
-export interface GetAllTransactionParams {
-  keyword?: string;
-  type?: _TransactionType;
-  recurringStatus?: "RECURRING" | "NON_RECURRING";
-  pageNumber?: number;
-  pageSize?: number;
-}
+    getAllTransactions: builder.query<
+      GetAllTransactionResponse,
+      GetAllTransactionParams
+    >({
+      query: (params) => {
+        const {
+          keyword = undefined,
+          type = undefined,
+          recurringStatus = undefined,
+          pageNumber = 1,
+          pageSize = 10,
+        } = params;
 
-export interface TransactionType {
-  _id: string;
-  userId: string;
-  title: string;
-  type: _TransactionType;
-  amount: number;
-  description: string;
-  category: string;
-  date: string;
-  isRecurring: boolean;
-  recurringInterval: RecurringIntervalType | null;
-  nextRecurringDate: string | null;
-  lastProcessed: string | null;
-  status: string;
-  paymentMethod: string;
-  createdAt: string;
-  updatedAt: string;
-  id?: string;
-}
+        return {
+          url: "/transaction/all",
+          method: "GET",
+          params: {
+            keyword,
+            type,
+            recurringStatus,
+            pageNumber,
+            pageSize,
+          },
+        };
+      },
+      providesTags: ["transactions"],
+    }),
 
-export interface GetAllTransactionResponse {
-  message: string;
-  transations: TransactionType[];
-  pagination: {
-    pageSize: number;
-    pageNumber: number;
-    totalCount: number;
-    totalPages: number;
-    skip: number;
-  };
-}
+    getSingleTransaction: builder.query<GetSingleTransactionResponse, string>({
+      query: (id) => ({
+        url: `/transaction/${id}`,
+        method: "GET",
+      }),
+    }),
 
-export interface AIScanReceiptData {
-  title: string;
-  amount: number;
-  date: string;
-  description: string;
-  category: string;
-  paymentMethod: string;
-  type: "INCOME" | "EXPENSE";
-  receiptUrl: string;
-}
+    duplicateTransaction: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/transaction/duplicate/${id}`,
+        method: "PUT",
+      }),
+      invalidatesTags: ["transactions"],
+    }),
 
-export interface AIScanReceiptResponse {
-  message: string;
-  data: AIScanReceiptData;
-}
+    updateTransaction: builder.mutation<void, UpdateTransactionPayload>({
+      query: ({ id, transaction }) => ({
+        url: `/transaction/update/${id}`,
+        method: "PUT",
+        body: transaction,
+      }),
+      invalidatesTags: ["transactions"],
+    }),
 
-export interface GetSingleTransactionResponse {
-  message: string;
-  transaction: TransactionType;
-}
+    bulkImportTransaction: builder.mutation<void, BulkImportTransactionPayload>(
+      {
+        query: (body) => ({
+          url: "/transaction/bulk-transaction",
+          method: "POST",
+          body,
+        }),
+        invalidatesTags: ["transactions"],
+      },
+    ),
 
-export interface UpdateTransactionPayload {
-  id: string;
-  transaction: CreateTransactionBody;
-}
+    deleteTransaction: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/transaction/delete/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["transactions", "analytics"],
+    }),
 
-export interface BulkTransactionType {
-  title: string;
-  type: _TransactionType;
-  amount: number;
-  category: string;
-  description: string;
-  date: string;
-  paymentMethod: PaymentMethodType;
-  isRecurring: boolean;
-}
+    bulkDeleteTransaction: builder.mutation<void, string[]>({
+      query: (transactionIds) => ({
+        url: "/transaction/bulk-delete",
+        method: "DELETE",
+        body: {
+          transactionIds,
+        },
+      }),
+      invalidatesTags: ["transactions", "analytics"],
+    }),
+  }),
+});
 
-export interface BulkImportTransactionPayload {
-  transactions: BulkTransactionType[];
-}
+export const {
+  useCreateTransactionMutation,
+  useGetAllTransactionsQuery,
+  useAiScanReceiptMutation,
+  useGetSingleTransactionQuery,
+  useDuplicateTransactionMutation,
+  useUpdateTransactionMutation,
+  useBulkImportTransactionMutation,
+  useDeleteTransactionMutation,
+  useBulkDeleteTransactionMutation,
+} = transactionApi;

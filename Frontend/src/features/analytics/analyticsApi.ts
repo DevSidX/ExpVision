@@ -1,7 +1,7 @@
 // Fetch analytics data from backend with automatic caching and refetching.
 
 import { apiClient } from "../../app/api-client";
-import { ChartAnalyticsResponse, ExpensePieChartBreakdownResponse, FilterParams, SummaryAnalyticsResponse } from "./anayticsType";
+import type { ChartAnalyticsResponse, ExpensePieChartBreakdownResponse, FilterParams, SummaryAnalyticsResponse } from "./anayticsType";
 
 export const analyticsApi = apiClient.injectEndpoints({
     endpoints: (builder) => (
@@ -31,7 +31,7 @@ export const analyticsApi = apiClient.injectEndpoints({
     expensePieChartBreakdown: builder.query<ExpensePieChartBreakdownResponse, FilterParams  >({
         query: ({preset, from, to}) => (
             {
-                url: "/analytics/expense-breakdown",
+                url: "/analytics/expenceBreakdown",
                 method: "GET",
                 params: {preset, from, to}
             }
