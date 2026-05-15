@@ -31,7 +31,7 @@ export const analyticsApi = apiClient.injectEndpoints({
     expensePieChartBreakdown: builder.query<ExpensePieChartBreakdownResponse, FilterParams  >({
         query: ({preset, from, to}) => (
             {
-                url: "/analytics/expenceBreakdown",
+                url: "/analytics/expenseBreakdown",
                 method: "GET",
                 params: {preset, from, to}
             }

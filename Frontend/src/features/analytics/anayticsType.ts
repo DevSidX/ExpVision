@@ -6,7 +6,7 @@ export interface FilterParams {
 
 interface PercentageChange {
   income: number;
-  expence: number;
+  expense: number;
   balance: number;
   prevPeriodFrom: string | null;
   prevPeriodTo: string | null;
@@ -24,7 +24,7 @@ export interface SummaryAnalyticsResponse {
   data: {
     availableBalance: number;
     totalIncome: number;
-    totalExpence: number;
+    totalExpense: number;
     transactionCount: number;
     savingRate: {
       percentage: number;
@@ -41,10 +41,10 @@ export interface ChartAnalyticsResponse {
     chartData: {
       date: string;
       income: number;
-      expence: number;
+      expense: number;
     }[];
     totalIncomeCount: number;
-    totalExpenceCount: number;
+    totalExpenseCount: number;
     preset: PresetType;
   };
 }
