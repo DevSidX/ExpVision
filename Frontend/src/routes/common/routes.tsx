@@ -1,13 +1,13 @@
 import { AUTH_ROUTES, PROTECTED_ROUTES } from "./routePath";
-import SignIn from "@/pages/auth/sign-in";
-import SignUp from "@/pages/auth/sign-up";
-import Dashboard from "@/pages/dashboard";
-import Transactions from "@/pages/transactions";
-import Reports from "@/pages/reports";
-import Settings from "@/pages/settings";
-import Account from "@/pages/settings/account";
-import Appearance from "@/pages/settings/appearance";
-import Billing from "@/pages/settings/billing";
+import SignIn from "../../pages/auth/signIn";
+import SignUp from "../../pages/auth/signUp";
+import Dashboard from "../../pages/dashboard"
+import Transactions from "../../pages/transactions";
+import Reports from "../../pages/reports";
+import Settings from "../../pages/settings";
+import Account from "../../pages/settings/account";
+import Appearance from "../../pages/settings/apperance";
+import Billing from "../../pages/settings/billing";
 
 // authentication
 const authenticationRoutePaths = [

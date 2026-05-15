@@ -1,4 +1,4 @@
-import { useTypedSelector } from "@/app/hook";
+import { useTypedSelector } from "../app/hook";
 import { Navigate, Outlet } from "react-router-dom";
 import { AUTH_ROUTES } from "./common/routePath";
 
