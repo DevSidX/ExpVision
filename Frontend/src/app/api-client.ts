@@ -1,9 +1,9 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
-import { RootState } from "./store"
+import type { RootState } from "./store"
 
 // defines HOW every API request should be sent.
 const baseQuery = fetchBaseQuery({
-    baseUrl: import.meta.env.BASE_URL,
+    baseUrl: import.meta.env.VITE_API_URL,
     credentials: "include",
     prepareHeaders: (headers, { getState }) => {
         const auth = (getState() as RootState).auth
@@ -16,7 +16,7 @@ const baseQuery = fetchBaseQuery({
 
 const apiClient = createApi({
     reducerPath: "api",
-    baseQuery: baseQuery,
+    baseQuery,
     refetchOnMountOrArgChange: true,
     tagTypes: ["transactions", "analytics", "billingSubscriptions"],
     endpoints: () => ({})

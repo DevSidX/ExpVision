@@ -2,14 +2,14 @@
 
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import authReducer from "../features/auth/authSlice"
-import storage from "redux-persist/lib/storage"
+import createWebStorage from "redux-persist/es/storage/createWebStorage";
 
+const storage = createWebStorage("local");
 import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from "redux-persist";
 
 import { apiClient } from "./api-client";
 //import { encryptTransform } from 'redux-persist-transform-encrypt';
 
-type RootReducerType = ReturnType<typeof rootReducer>;
 
 // how redux-persist should save Redux state.
 const persistConfig = {
@@ -23,6 +23,7 @@ const rootReducer = combineReducers({
     [apiClient.reducerPath]: apiClient.reducer, // Add API client reducer to root reducer
     auth: authReducer, // Add auth reducer to root reducer
 });
+type RootReducerType = ReturnType<typeof rootReducer>;
 
 // Create a persisted version of the root reducer
 const persistedReducer = persistReducer<RootReducerType>(
