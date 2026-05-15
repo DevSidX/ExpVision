@@ -7,7 +7,6 @@ import Reports from "../../pages/reports";
 import Settings from "../../pages/settings";
 import Account from "../../pages/settings/account";
 import Appearance from "../../pages/settings/apperance";
-import Billing from "../../pages/settings/billing";
 
 // authentication
 const authenticationRoutePaths = [
@@ -49,10 +48,6 @@ const protectedRoutePaths = [
             { 
                 path: PROTECTED_ROUTES.SETTINGS_APPEARANCE, 
                 element: <Appearance /> 
-            },
-            { 
-                path: PROTECTED_ROUTES.SETTINGS_BILLING, 
-                element: <Billing /> 
             },
         ]
     },
