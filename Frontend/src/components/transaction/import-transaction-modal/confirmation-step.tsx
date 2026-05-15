@@ -4,11 +4,11 @@ import { ChevronDown, ChevronLeft, FileCheck } from "lucide-react";
 import { Button } from "../../ui/button";
 import { Progress } from "../../ui/progress";
 import { DialogDescription, DialogHeader, DialogTitle, } from "../../ui/dialog";
-import { _TRANSACTION_TYPE, PAYMENT_METHODS_ENUM } from "@/constant";
+import { _TRANSACTION_TYPE, PAYMENT_METHODS_ENUM } from "../../../constant";
 import { toast } from "sonner";
-import { MAX_IMPORT_LIMIT } from "@/constant";
-import { BulkTransactionType } from "../../../features/transaction/transactionType";
-import { useProgressLoader } from "@/hooks/use-progress-loader";
+import { MAX_IMPORT_LIMIT } from "../../../constant";
+import type { BulkTransactionType } from "../../../features/transaction/transactionType";
+import { useProgressLoader } from "../../../hooks/use-progress-loader";
 import { useBulkImportTransactionMutation } from "../../../features/transaction/transactionApi";
 
 type ConfirmationStepProps = {

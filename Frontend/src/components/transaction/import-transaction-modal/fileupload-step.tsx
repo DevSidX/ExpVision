@@ -5,8 +5,8 @@ import { Button } from "../../ui/button";
 import { Progress } from "../../ui/progress";
 import { useRef } from "react";
 import { DialogDescription, DialogHeader, DialogTitle, } from "../../ui/dialog"
-import { MAX_FILE_SIZE, MAX_IMPORT_LIMIT } from "@/constant";
-import { useProgressLoader } from "@/hooks/use-progress-loader";
+import { MAX_FILE_SIZE,MAX_IMPORT_LIMIT } from "../../../constant";
+import { useProgressLoader } from "../../../hooks/use-progress-loader";
 
 interface CsvRow {
     [key: string]: string | undefined; // Define that rows can be indexed with strings

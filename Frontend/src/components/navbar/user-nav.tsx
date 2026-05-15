@@ -43,7 +43,6 @@ export function UserNav({
             >
                 <DropdownMenuLabel className="flex flex-col items-start gap-1">
                     <span className="font-semibold">{userName}</span>
-                    <span className="text-[13px] text-gray-400 font-light">Free Trial (2 days left)</span>
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator className="!bg-gray-700" />
                 <DropdownMenuGroup>
