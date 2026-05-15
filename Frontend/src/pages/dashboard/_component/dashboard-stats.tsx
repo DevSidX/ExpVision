@@ -30,9 +30,9 @@ const DashboardStats = ({ dateRange }: { dateRange?: DateRangeType }) => {
                 />
                 <SummaryCard
                     title="Total Expenses"
-                    value={summaryData?.totalExpenses}
+                    value={summaryData?.totalExpense}
                     dateRange={dateRange}
-                    percentageChange={summaryData?.percentageChange?.expenses}
+                    percentageChange={summaryData?.percentageChange?.expense}
                     isLoading={isFetching}
                     cardType="expenses"
                 />

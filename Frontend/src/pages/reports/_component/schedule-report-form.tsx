@@ -3,22 +3,9 @@ import { Loader, Mail } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "../../../components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, } from "../../../components/ui/form";
 import { Input } from "../../../components/ui/input";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "../../../components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "../../../components/ui/select";
 import { Switch } from "../../../components/ui/switch";
 import { useAppDispatch, useTypedSelector } from "../../../app/hook";
 import { useUpdateReportSettingMutation } from "../../../features/report/reportAPI";

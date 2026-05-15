@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import CountUp from "react-countup";
+import * as CountUpModule from "react-countup";
 import { TrendingDownIcon, TrendingUpIcon, type LucideIcon } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "../../../components/ui/card";
 import { formatCurrency } from "../../../lib/format-currency";
@@ -7,6 +7,8 @@ import { formatPercentage } from "../../../lib/format-percentage";
 import { Skeleton } from "../../../components/ui/skeleton";
 import { cn } from "../../../lib/utils";
 import { DateRangeEnum, type DateRangeType } from "../../../components/date-range-select";
+
+const CountUp = CountUpModule.default;
 
 type CardType = "balance" | "income" | "expenses" | "savings";
 type CardStatus = {
@@ -188,14 +190,7 @@ const SummaryCard: FC<SummaryCardProps> = ({
                         cardType === "balance" && value < 0 ? "text-red-400" : "text-white"
                     )}
                 >
-                    <CountUp
-                        start={0}
-                        end={value}
-                        preserveValue
-                        decimals={2}
-                        decimalPlaces={2}
-                        formattingFn={formatCountupValue}
-                    />
+                    {formatCountupValue(value)}
                 </div>
 
                 <div className="text-sm text-muted-foreground mt-2">

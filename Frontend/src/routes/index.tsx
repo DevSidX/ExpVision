@@ -3,6 +3,8 @@ import { authenticationRoutePaths, protectedRoutePaths } from "./common/routes"
 import AuthRoute from './authRoute';
 import ProtectedRoute from './protectedRoutes';
 import { AppLayout } from '../layouts/app-layout';
+import BaseLayout from '../layouts/base-layout';
+import useAuthExpiration from '../hooks/use-auth-expiration';
 
 function AppRoutes() {
     useAuthExpiration();

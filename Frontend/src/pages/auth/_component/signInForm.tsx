@@ -69,7 +69,7 @@ const SignInForm = ({ className, ...props }: React.ComponentPropsWithoutRef<"for
                                     <FormLabel className="!font-normal">Email</FormLabel>
                                     <FormControl>
                                         <Input
-                                            placeholder="subscribe2techwithemma@gmail.com"
+                                            placeholder="abc123@gmail.com"
                                             {...field}
                                         />
                                     </FormControl>

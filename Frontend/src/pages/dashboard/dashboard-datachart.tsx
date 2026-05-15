@@ -2,21 +2,8 @@ import * as React from "react";
 import { format } from "date-fns";
 import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
 import { useIsMobile } from "../../hooks/use-mobile";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "../../components/ui/card"
-import {
-    type ChartConfig,
-    ChartContainer,
-    ChartLegend,
-    ChartLegendContent,
-    ChartTooltip,
-    ChartTooltipContent,
-} from "../../components/ui/chart";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, } from "../../components/ui/card"
+import { type ChartConfig, ChartContainer, ChartLegend, ChartLegendContent, ChartTooltip, ChartTooltipContent, } from "../../components/ui/chart";
 import { EmptyState } from "../../components/empty-state";
 import { TrendingUpIcon, TrendingDownIcon } from "lucide-react";
 import type { DateRangeType } from "../../components/date-range-select";
@@ -29,14 +16,14 @@ interface PropsType {
 }
 
 const COLORS = ["var(--primary)", "var(--color-destructive)"];
-const TRANSACTION_TYPES = ["income", "expenses"];
+const TRANSACTION_TYPES = ["income", "expense"];
 
 const chartConfig = {
     income: {
         label: "Income",
         color: COLORS[0],
     },
-    expenses: {
+    expense: {
         label: "Expenses",
         color: COLORS[1],
     },
@@ -148,7 +135,7 @@ const DashboardDataChart: React.FC<PropsType> = (props) => {
                                         }
                                         indicator="line"
                                         formatter={(value, name) => {
-                                            const isExpense = name === "expenses";
+                                            const isExpense = name === "expense";
                                             const color = isExpense ? COLORS[1] : COLORS[0];
                                             return [
                                                 <span key={name} style={{ color }}>
@@ -165,7 +152,7 @@ const DashboardDataChart: React.FC<PropsType> = (props) => {
                                 }
                             />
                             <Area
-                                dataKey="expenses"
+                                dataKey="expense"
                                 stackId="1"
                                 type="step"
                                 fill="url(#expensesGradient)"
