@@ -110,14 +110,28 @@ export function AccountForm() {
                             </AvatarFallback>
                         </Avatar>
                         <div className="flex flex-col gap-2">
-                            <Input
-                                type="file"
-                                accept="image/*"
-                                onChange={handleAvatarChange}
-                                className="max-w-[250px]"
-                            />
+                            <div className="flex items-center gap-3">
+                                <label
+                                    htmlFor="profile-upload"
+                                    className="cursor-pointer rounded-md border bg-background px-4 py-2 text-sm font-medium hover:bg-accent"
+                                >
+                                    Choose File
+                                </label>
+
+                                <span className="text-sm text-muted-foreground truncate max-w-[150px]">
+                                    {file ? file.name : "No file chosen"}
+                                </span>
+
+                                <Input
+                                    id="profile-upload"
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={handleAvatarChange}
+                                    className="hidden"
+                                />
+                            </div>
                             <p className="text-xs text-muted-foreground">
-                                Recommended: Square JPG, PNG, at least 300x300px.
+                                JPG or PNG • Minimum 300x300 px
                             </p>
                         </div>
                     </div>
