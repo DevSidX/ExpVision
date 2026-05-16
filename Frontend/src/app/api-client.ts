@@ -3,7 +3,7 @@ import type { RootState } from "./store"
 
 // defines HOW every API request should be sent.
 const baseQuery = fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_API_URL,
+    baseUrl: `${import.meta.env.VITE_API_URL}/api`,
     credentials: "include",
     prepareHeaders: (headers, { getState }) => {
         const auth = (getState() as RootState).auth
