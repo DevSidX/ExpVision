@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config();
+
 import './config/passport.config'
 import { Env } from './config/env.config'
 import express, { NextFunction , Request, Response} from 'express'
@@ -8,6 +9,7 @@ import { HttpStatus } from './config/http.config'
 import { errorHandler } from "./middlewares/errorHandler.middleware"
 import { BadRequestException } from "./utils/ApiError"
 import { asyncHandler } from "./middlewares/asyncHandler.middleware"
+
 import connectDb from "./db/database";
 import passport from "passport";
 import { initilizeCrons } from "./crons";

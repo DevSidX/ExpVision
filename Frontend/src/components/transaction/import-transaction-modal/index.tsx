@@ -12,7 +12,6 @@ const ImportTransactionModal = () => {
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [file, setFile] = useState<File | null>(null);
   const [csvColumns, setCsvColumns] = useState<CsvColumn[]>([]);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [csvData, setCsvData] = useState<any[]>([]); 
   const [mappings, setMappings] = useState<Record<string, string>>({});
   const [open, setOpen] = useState(false);

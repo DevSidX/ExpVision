@@ -4,10 +4,8 @@ import { logout, updateCredentials } from "../features/auth/authSlice";
 import { useRefreshMutation } from "../features/auth/authApi";
 
 const useAuthExpiration = () => {
-    const {
-        accessToken,
-        expiresAt,
-    } = useTypedSelector((state) => state.auth);
+    const { accessToken, expiresAt } = useTypedSelector((state) => state.auth);
+
     const dispatch = useAppDispatch();
     const [refreshToken] = useRefreshMutation()
 
